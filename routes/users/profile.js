@@ -189,7 +189,7 @@ const sendRequestSupplier = async (req, res) => {
 	await mailer(user.email,`Supplier request received at ${process.env.APP_NAME} `,user,'supplierRequestTemplate')
 		
 	return res.send({ response_type: 'success', message: `Your supplier request has been received and would be proceeding very soon. 
-		Thank you for your patience.`, supplierRequest: user.supplierRequest })
+		Thank you for your patience.`, roleStatus: user.roleStatus })
 }
 
 module.exports = {
