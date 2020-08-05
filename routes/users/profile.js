@@ -13,7 +13,7 @@ const { User, validateUser } = require("../../models/user")
 const profileGet = async (req, res) => {
   const { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const user = await User.findById(_id)
-	const profile = _.omit( user, [ "password", "passwordRecoverCode", "__v"])
+	let profile = _.omit( user, [ "password", "passwordRecoverCode", "__v"])
 	console.log(profile)
 	profile = _.omit( profile, ["password"])
 	console.log(profile)

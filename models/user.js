@@ -60,7 +60,8 @@ const userSchema = new mongoose.Schema({
 		default: '-'
 	},
 	profilePhotoUrl: {
-		type: String
+		type: String,
+		default: ''
 	},
 	mobile: {
 		type: String,

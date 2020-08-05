@@ -32,7 +32,7 @@ const userList = async (req, res) => {
     }
   ])
   if (result.length == 0) return res.json( { count: 0, users: [], perPage } )
-  const users = result[0].data.map ( user => _.omit( user, ["password", "passwordRecoverCode", "__v"]) )
+  const users = result[0].data.map ( user => _.omit( user, [ "password", "passwordRecoverCode", "__v"]) )
   users.map( user => {
     user.emailVerify = user.emailVerify.startsWith('true') 
     user.mobileVerify = user.mobileVerify.startsWith('true')
