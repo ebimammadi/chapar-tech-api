@@ -7,16 +7,18 @@ const sha256 = require("js-sha256")
 const mailer = require("../../components/nodemailer")
 const { utcNow } = require("../../components/lib")
 const { invalidateSessions } = require("../../middleware/session")
-const { sendSms, logSmsInDb } = require("../../components/sms")
+const { sendSms, logSmsInDb } = require("../../components/sms") //todo logSmsInDb
 const { User, validateUser } = require("../../models/user")
 
 const profileGet = async (req, res) => {
   const { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const user = await User.findById(_id)
 	const profile = _.omit( user, ["password", "passwordRecoverCode", "__v"] )
+	console.log(profile)
 	profile.emailVerify = user.emailVerify.startsWith('true') 
 	profile.mobileVerify = user.mobileVerify.startsWith('true')
 	if (profile.urls.facebook === undefined) profile.urls = { facebook: '', instagram: '', website: '' }
+	
 	return res.send(profile)
 }
 
