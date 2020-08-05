@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser")
 const { responseHeaderConfig } = require("../middleware/cookie")
 
 module.exports = (app) => {
-  app.use( (req,res, next) => setTimeout(next, 2000)); //adds latency intentionally
+  app.use( (req,res, next) => setTimeout(next, 1000)); //adds latency intentionally
   app.use(helmet())
   app.use(cors({ credentials: true, origin: process.env.APP_PATH }))
   app.use(express.json({ limit: '16mb' }))
