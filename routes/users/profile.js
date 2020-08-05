@@ -13,7 +13,7 @@ const { User, validateUser } = require("../../models/user")
 const profileGet = async (req, res) => {
   const { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const user = await User.findById(_id)
-	const profile = _.pick( user, ["email", "mobile", "name", "urls", "profilePhotoUrl", "userRole", "slug", "supplierRequest" ] )
+	const profile = _.omit( user, ["password", "passwordRecoverCode", "__v"] )
 	profile.emailVerify = user.emailVerify.startsWith('true') 
 	profile.mobileVerify = user.mobileVerify.startsWith('true')
 	if (profile.urls.facebook === undefined) profile.urls = { facebook: '', instagram: '', website: '' }
