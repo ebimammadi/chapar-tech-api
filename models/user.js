@@ -68,7 +68,8 @@ const userSchema = new mongoose.Schema({
 	},
 	mobile: {
 		type: String,
-		unique: true
+		unique: true,
+		sparse: true
 	},
 	mobileVerifyCode: {
 		type: String
@@ -101,7 +102,7 @@ userSchema.methods.generateAuthToken = function(session_id) {
 }
 
 userSchema.methods.setRoleStatusPrevious = function() {
-	if (this.roleStatus.previous !== "")
+	if (this.roleStatus.previous && this.roleStatus.previous !== "" )
 	return this.roleStatus.previous + '$' + this.roleStatus.status +','+ this.roleStatus.status
 	return this.roleStatus.status +','+ this.roleStatus.status
 }
