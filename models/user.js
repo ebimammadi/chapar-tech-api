@@ -51,9 +51,12 @@ const userSchema = new mongoose.Schema({
 		enum: validUserRoles,
 		default: 'user'  
 	},
+	emailVerifyCode: {
+		type: String
+	},
 	emailVerify: {
-		type: String, 
-		default: 'false'
+		type: Boolean, 
+		default: false
 	},
 	passwordRecoverCode: {
 		type: String, 
@@ -67,9 +70,12 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		unique: true
 	},
+	mobileVerifyCode: {
+		type: String
+	},
 	mobileVerify: {
-		type: String, 
-		default: 'false'
+		type: Boolean, 
+		default: false
 	},
 	urls: {
 		facebook: { type: String, default: '' },
