@@ -12,12 +12,9 @@ const { User, validateUser } = require("../../models/user")
 
 const profileGet = async (req, res) => {
   const { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
-	const user =  await User.findById(_id).select('-password -passwordRecoverCode -__v')
-	const profile = user 
-	profile.emailVerify = user.emailVerify.startsWith('true') 
-	profile.mobileVerify = user.mobileVerify.startsWith('true')
-	if (profile.urls.facebook === undefined) profile.urls = { facebook: '', instagram: '', website: '' }
-	return res.send(profile)
+	const user =  await User.findById(_id)
+		.select('-password -passwordRecoverCode -__v -emailVerifyCode -mobileVerifyCode')
+	return res.send(user)
 }
 
 const profileSet = async (req, res) => {
@@ -56,7 +53,8 @@ const emailSet = async (req, res) => {
 	//send warning notification to the previous email 
 	await mailer(user.email,'Warning! Email changed.', { name: user.name } , 'emailChangeWarningTemplate')
 	//generate the verify link
-	user.emailVerify = sha256( user._id + Date.now())
+	user.emailVerifyCode = sha256( user._id + Date.now())
+	user.emailVerify = false
 	user.email = newEmail
 	await user.save()
 	//send verify link for the new email 
@@ -85,7 +83,8 @@ const mobileSet = async (req, res) => {
 	const number = "0046" + mobile.slice(1)
 	const message = `Your verification code is ${verifyCode}.`
 	const sms = await sendSms( number, message) 
-	user.mobileVerify = verifyCode
+	user.mobileVerifyCode = verifyCode
+	user.mobileVerify = false
 	user.mobile = mobile
 	await user.save()
 
@@ -124,7 +123,8 @@ const passwordSet = async (req, res) => {
 const sendVerificationLink = async (req, res) => {
   const { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const user = await User.findById(_id)
-	user.emailVerify = sha256( user._id + Date.now()); 
+	user.emailVerifyCode = sha256( user._id + Date.now())
+	user.emailVerify = false
 	await user.save()
 	await mailer(user.email,`Confirm your email at ${process.env.APP_NAME}`,user,'userEmailVerifyTemplate')
   return res.json({ response_type:`success`, message: `Verification code 
@@ -145,7 +145,8 @@ const sendVerificationSms = async (req, res) => {
 	const number = "0046" + mobile.slice(1)
 	const message = `Your verification code is ${verifyCode}.`
 	const sms = await sendSms( number, message) 
-	user.mobileVerify = verifyCode
+	user.mobileVerifyCode= verifyCode
+	user.mobileVerify = false
 	await user.save()
 	//? Todo logs to db
 	//await logSmsInDb("0046732440940", "Hello !!! https://chapar.techSSASSS", sms.toString())
@@ -162,9 +163,10 @@ const receiveVerificationCode = async (req, res) => {
 	const { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const user = await User.findById(_id)
 	if (user.mobile != mobile) return res.json({ message: `Your mobile number seems invalid.`})
-	if (user.mobileVerify != req.body.code) return res.json({ message: `Your provided code seems invalid.`})
+	if (user.mobileVerifyCode != req.body.code) return res.json({ message: `Your provided code seems invalid.`})
 	
-	user.mobileVerify = `true-${utcNow()}`
+	user.mobileVerifyCode = `${utcNow()}`
+	user.mobileVerify = true
 	await user.save()
 		
 	return res.send({ response_type: 'success', message: `Your mobile number is verified successfully.` })

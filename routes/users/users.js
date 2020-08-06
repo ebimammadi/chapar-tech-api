@@ -32,22 +32,18 @@ const userList = async (req, res) => {
     }
   ])
   if (result.length == 0) return res.json( { count: 0, users: [], perPage } )
-  const users = result[0].data.map ( user => _.omit( user, [ "password", "passwordRecoverCode", "__v"]) )
-  users.map( user => {
-    user.emailVerify = user.emailVerify.startsWith('true') 
-    user.mobileVerify = user.mobileVerify.startsWith('true')
-  })
+  const users = result[0].data
+    .map ( user => _.omit( user, [ "password", "passwordRecoverCode", "__v", "emailVerifyCode", "mobileVerifyCode"]) )
   return res.json( { count: result[0].count, users, perPage } )
 }
 const profileGetByEmail = async (req, res) => {
   //params: email
   const { error } = validateUser.emailValidate(req.params)
 	if (error) return res.json({ message: error.details[0].message })
-	const user = await User.findOne( { email: req.params.email } ).select('-password -passwordRecoverCode -__v')
+  const user = await User.findOne( { email: req.params.email } )
+    .select('-password -passwordRecoverCode -__v -emailVerifyCode -mobileVerifyCode')
 	if (!user) return res.json({ message: `Error! Invalid 'email: ${req.params.email}'.` })
 	const profile = user //_.omit( user, ["password", "passwordRecoverCode", "__v"])
-	profile.emailVerify = user.emailVerify.startsWith('true') 
-	profile.mobileVerify = user.mobileVerify.startsWith('true')
 	if (profile.urls.facebook === undefined) profile.urls = { facebook: '', instagram: '', website: '' }
 	return res.send( profile )
 }
