@@ -42,7 +42,7 @@ const register = async (req, res) => {
 	user = new User(_.pick(req.body, ['name','email','password']))
 	user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(10))
 	user.slug = slug
-	user.emailVerify = sha256( user._id + Date.now()); 
+	user.emailVerifyCode = sha256( user._id + Date.now())
 	await user.save()
 	await mailer(user.email,`Welcome to ${process.env.APP_NAME}`,user,'userRegisterTemplate')
 	// generate token
@@ -52,7 +52,7 @@ const register = async (req, res) => {
 	await createSession( {..._.pick(user, ['email', '_id']), token, status: 'Registered', session_id: s })
 	return res.header('x-auth-token', token)
 				.cookie('x-auth-token', token, cookieOptions)
-				.send( _.pick(user, ['name', 'email', '_id']) ); 
+				.send( _.pick(user, ['name', 'email', '_id']) )
 }
 
 const recoverPassword = async (req, res) => {
@@ -100,10 +100,10 @@ const recoverPasswordVerifyCode = async (req, res) => {
 }
 
 const verifyEmail = async (req, res) => {
-  const code = req.params.code;
-	const user = await User.findOne({ emailVerify: code })
+  const code = req.params.code
+	const user = await User.findOne({ emailVerifyCode: code })
 	if (!user) return res.json({ message: `The link seems invalid.` })
-	user.set({ emailVerify: `true-${utcNow()}` })
+	user.set({ emailVerifyCode: `${utcNow()}`, emailVerify: true })
 	await user.save()
 	return res.json({ response_type:`success`, message: `Thank you for your confirmation.
 				 Your Email has been verified successfully.` })
