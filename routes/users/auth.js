@@ -20,7 +20,6 @@ const login = async (req, res) => {
 	if (!validPassword) return res.json({ message: `Invalid email or password.` })
 	if (!user.isActive) return res.json({ message: `Your account seems de-activated.` })
 	const token = user.generateAuthToken()
-	console.log(token)
 	const { s } = jwt.verify(token, process.env.JWT_KEY)
 	await createSession( {..._.pick(user, ['email', '_id']), token, session_id: s  })
 	return res.header('x-auth-token', token)
