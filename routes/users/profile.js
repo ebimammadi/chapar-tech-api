@@ -90,7 +90,7 @@ const mobileSet = async (req, res) => {
 
 	//await logSmsInDb(number, message, sms)//! if sms fails ?!
 	if (sms.response.statusCode === 200	)
-		return res.send({ response_type: 'success', message: `Your mobile has been updated, 
+		return res.send({ response_type: 'info', message: `Your mobile has been updated, 
 			please input your received verification code.` })
 }
 
@@ -151,7 +151,7 @@ const sendVerificationSms = async (req, res) => {
 	//? Todo logs to db
 	//await logSmsInDb("0046732440940", "Hello !!! https://chapar.techSSASSS", sms.toString())
 	if (sms.response.statusCode === 200	)
-		return res.send({ response_type: 'success', message: `Please input your received verification code.` })
+		return res.send({ response_type: 'info', message: `Please input your received verification code.` })
 }
 
 const receiveVerificationCode = async (req, res) => {
@@ -181,7 +181,7 @@ const sendRequestSupplier = async (req, res) => {
 	const _id = req.body._id
 	const user = await User.findById(_id)
 	const previous = user.setRoleStatusPrevious()
-	user.roleStatus = { status: 'pending', date: utcNow(), previous }
+	user.roleStatus = { status: 'pending', date: Date.now(), previous }
 	await user.save()
 
 	let admins = await User.find({ userRole: `admin` })

@@ -33,8 +33,8 @@ const register = async (req, res) => {
 	const { error } = validateUser.register(req.body)
 	if (error) return res.json({ message: error.details[0].message })
 	let user = await User.findOne({ email: req.body.email })
-	if (user) return res.json({ message: `User already registered.` })
-	let slug = req.body.name.trim().toLowerCase().split(" ").join("-")	// create a unique slug
+	if (user) return res.json({ message: `This email address is registered before.` })
+	let slug = req.body.name.trim().toLowerCase().split(" ").join("-")	
 	while(true){
 		if (!await User.findOne({ slug })) break
 		slug = slug + (Math.floor(Math.random() * 10) + 1) 
