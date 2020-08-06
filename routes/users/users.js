@@ -43,9 +43,9 @@ const profileGetByEmail = async (req, res) => {
   //params: email
   const { error } = validateUser.emailValidate(req.params)
 	if (error) return res.json({ message: error.details[0].message })
-	const user = await User.findOne( { email: req.params.email } )
+	const user = await User.findOne( { email: req.params.email } ).select('-password -passwordRecoverCode -__v')
 	if (!user) return res.json({ message: `Error! Invalid 'email: ${req.params.email}'.` })
-	const profile = _.omit( user, ["password", "passwordRecoverCode", "__v"])
+	const profile = user //_.omit( user, ["password", "passwordRecoverCode", "__v"])
 	profile.emailVerify = user.emailVerify.startsWith('true') 
 	profile.mobileVerify = user.mobileVerify.startsWith('true')
 	if (profile.urls.facebook === undefined) profile.urls = { facebook: '', instagram: '', website: '' }
