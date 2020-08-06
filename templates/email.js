@@ -17,10 +17,10 @@ const emailTemplates = (message, template) => {
       and thank you for registering at ${process.env.APP_PATH}, 
       now it is time to verify your email account with us.<br>
       Please verify your email address by click at the following link:<br>
-      <a href="${process.env.APP_PATH}/verify-email/${message.emailVerify}" target="_blank">
-        ${process.env.APP_PATH}/verify-email/${message.emailVerify}
+      <a href="${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}" target="_blank">
+        ${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}
       </a><br><br>You can also copy and paste the link to your web browser:<br>
-      ${process.env.APP_PATH}/verify-email/${message.emailVerify}`
+      ${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}`
       
   }
   if (template == 'emailChangeWarningTemplate' ){
@@ -36,10 +36,10 @@ const emailTemplates = (message, template) => {
       Dear ${message.name},<br>
       This 'user email' has been set as your new email account at ${process.env.APP_PATH}. 
       Please verify your email address by click at the following link:<br>
-      <a href="${process.env.APP_PATH}/verify-email/${message.emailVerify}" target="_blank">
-        ${process.env.APP_PATH}/verify-email/${message.emailVerify}
+      <a href="${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}" target="_blank">
+        ${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}
       </a><br><br>You can also copy and paste the link to your web browser:<br>
-      ${process.env.APP_PATH}/verify-email/${message.emailVerify}`
+      ${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}`
       
   }
 
@@ -55,10 +55,10 @@ const emailTemplates = (message, template) => {
     return `${logoLiteral}<br><br><br>
       Dear ${message.name},<br>You are required to confirm your email address. 
       Please verify your email address by click at the following link:<br>
-      <a href="${process.env.APP_PATH}/verify-email/${message.emailVerify}" target="_blank">
-        ${process.env.APP_PATH}/verify-email/${message.emailVerify}
+      <a href="${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}" target="_blank">
+        ${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}
       </a><br><br>You can also copy and paste the link to your web browser:<br>
-      ${process.env.APP_PATH}/verify-email/${message.emailVerify}`
+      ${process.env.APP_PATH}/verify-email/${message.emailVerifyCode}`
       
   }
 
