@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken")
 const { User, validateUser } = require("../../models/user")
 const { regex } = require("../../components/lib")
 const { invalidateSessions } = require("../../middleware/session")
-
+const mailer = require("../../components/nodemailer")
 const userList = async (req, res) => {
   // req.body: search, page, userRole
   const { error } = validateUser.userList(req.query)
@@ -84,7 +84,7 @@ const userSetRole = async (req, res) => {
     return res.send({ message: `User ${user.name} (${user.email}) is already a(n) ${user.userRole}!.`, _id })
   user.userRole = req.body.userRole
   const previous = user.setRoleStatusPrevious()
-  user.roleStatus = { status: 'pending', date: utcNow(), previous }
+  user.roleStatus = { status: 'pending', previous }
   await user.save()
   await mailer(user.email, `'${user.userRole}' Access granted at ${process.env.APP_NAME}`, user, 'roleGrantedTemplate')
   return res.send({ response_type: 'success', message: `User ${user.name} 
