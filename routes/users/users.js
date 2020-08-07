@@ -35,7 +35,7 @@ const userList = async (req, res) => {
   if (result.length == 0) return res.json( { count: 0, users: [], perPage } )
   const users = result[0].data
     .map ( user => _.omit( user, [ "password", "passwordRecoverCode", "__v", "emailVerifyCode", "mobileVerifyCode"]) )
-  return res.json( { count: result[0].count, users, perPage } )
+  return res.json( { perPage, count: result[0].count, users } )
 }
 const profileGetByEmail = async (req, res) => {
   //params: email
