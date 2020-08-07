@@ -6,7 +6,7 @@ const { invalidateSessions } = require("../../middleware/session")
 const mailer = require("../../components/nodemailer")
 
 const userList = async (req, res) => {
-  // req.body: search, page, userRole
+  // req.query: search, page, userRole
   const { error } = validateUser.userList(req.query)
 	if (error) return res.json({ message: error.details[0].message })
   const perPage = parseInt(process.env.PER_PAGE)
