@@ -11,4 +11,6 @@ const cookieOptions = {
 	httpOnly: true
 }
 
+if (process.env.APP_PATH === "http://localhost") cookieOptions.secure = false
+
 module.exports = { responseHeaderConfig, cookieOptions }
