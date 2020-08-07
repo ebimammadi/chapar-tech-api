@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken")
 const sha256 = require("js-sha256")
 
 const mailer = require("../../components/nodemailer")
-const { utcNow } = require("../../components/lib")
 
 const { cookieOptions } = require("../../middleware/cookie")
 const { createSession, refreshSession, invalidateSessions } = require("../../middleware/session")
@@ -103,7 +102,7 @@ const verifyEmail = async (req, res) => {
   const code = req.params.code
 	const user = await User.findOne({ emailVerifyCode: code })
 	if (!user) return res.json({ message: `The link seems invalid.` })
-	user.set({ emailVerifyCode: `${utcNow()}`, emailVerify: true })
+	user.set({ emailVerifyCode: `${Date.now()}`, emailVerify: true })
 	await user.save()
 	return res.json({ response_type:`success`, message: `Thank you for your confirmation.
 				 Your Email has been verified successfully.` })
