@@ -83,8 +83,13 @@ const ticketUpdateValidate = (ticket) => {
 	return schema.validate(ticket)
 }
 
+const ticketListValidate = (ticket) => {
+
+}
+
 exports.Ticket = Ticket
 exports.validateTicket = { 
 	register: ticketRegisterValidate,
-	update: ticketUpdateValidate
+	update: ticketUpdateValidate,
+	ticketList: ticketListValidate
 }
