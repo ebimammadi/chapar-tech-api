@@ -5,7 +5,6 @@ const sha256 = require("js-sha256")
 // const mongoose = require("mongoose")
 
 const mailer = require("../../components/nodemailer")
-const { utcNow } = require("../../components/lib")
 const { invalidateSessions } = require("../../middleware/session")
 const { sendSms, logSmsInDb } = require("../../components/sms") //todo logSmsInDb
 const { User, validateUser } = require("../../models/user")
@@ -165,7 +164,7 @@ const receiveVerificationCode = async (req, res) => {
 	if (user.mobile != mobile) return res.json({ message: `Your mobile number seems invalid.`})
 	if (user.mobileVerifyCode != req.body.code) return res.json({ message: `Your provided code seems invalid.`})
 	
-	user.mobileVerifyCode = `${utcNow()}`
+	user.mobileVerifyCode = `${Date.now()}`
 	user.mobileVerify = true
 	await user.save()
 		
