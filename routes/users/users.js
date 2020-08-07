@@ -4,6 +4,7 @@ const { User, validateUser } = require("../../models/user")
 const { regex } = require("../../components/lib")
 const { invalidateSessions } = require("../../middleware/session")
 const mailer = require("../../components/nodemailer")
+
 const userList = async (req, res) => {
   // req.body: search, page, userRole
   const { error } = validateUser.userList(req.query)
@@ -72,7 +73,6 @@ const userSuspend = async (req, res) => {
   //payload: _id
   return await userActivateSuspend(req, res, 'suspend')
 }
-
 const userSetRole = async (req, res) => {
   //payload (_id, userRole)
   const { error } = validateUser.userRole(req.body)
