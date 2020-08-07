@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
 
+const validTicketStatus = [ 'open', 'action-required', 'closed' ]
 //schema validate mongoose
 const ticketSchema = new mongoose.Schema({
   ticketId: {
@@ -32,7 +33,7 @@ const ticketSchema = new mongoose.Schema({
 	},
 	status: { 
 		type: String,
-		default: 'Open' 
+		default: 'open' 
 	},
 	updates: [{
     userEmail: {
@@ -54,7 +55,7 @@ const ticketSchema = new mongoose.Schema({
   }]
 })
 
-ticketSchema.methods.generateTicketId = function(length = 6) {
+ticketSchema.methods.generateTicketId = function (length = 6) {
 	let id = ''
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789'
   const charactersLength = characters.length
@@ -84,12 +85,26 @@ const ticketUpdateValidate = (ticket) => {
 }
 
 const ticketListValidate = (ticket) => {
+	const schema = Joi.object({
+		page: Joi.number().integer(),
+		userRole: Joi.string().allow('').valid( ...validTicketStatus ),
+		search: Joi.string().allow('').max(64),
+		email: Joi.string().email()
+	})
+	return schema.validate(ticket)
+}
 
+const ticketIdValidate = (ticket) => {
+	const schema = Joi.object({
+		ticketId: Joi.string().required().min(6).max(6)
+	})
+	return schema.validate(ticket)
 }
 
 exports.Ticket = Ticket
 exports.validateTicket = { 
 	register: ticketRegisterValidate,
 	update: ticketUpdateValidate,
-	ticketList: ticketListValidate
+	ticketList: ticketListValidate,
+	ticketId: ticketIdValidate
 }
