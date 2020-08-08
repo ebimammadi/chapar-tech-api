@@ -39,11 +39,11 @@ router.post('/ticket-create', auth, async (req,res) => { //
   //admins read email from 
   let admins = await User.find({ userRole: `admin` })
   for (let i=0; i< admins.length; i++){
-    await mailer(admins[i].email,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'newTicketAdminTemplate')
+    await mailer(admins[i].email,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'ticketNewTicketAdmin')
   }
-  await mailer(ticket.ownerEmail,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'newTicketUserTemplate')
+  await mailer(ticket.ownerEmail,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'ticketNewTicketUser')
   
-  return res.send( {response_type: `success`, message: `Ticket ${ticketId} created successfully.`, ticketId: ticketId}); 
+  return res.send( {response_type: `success`, message: `Ticket '${ticketId}' created successfully.`, ticketId: ticketId}); 
 })
 
 router.post('/ticket-update', auth, async (req,res) => { 
@@ -79,9 +79,9 @@ router.post('/ticket-update', auth, async (req,res) => {
   //todo admins read email from 
   const admins = await User.find({ userRole: `admin` })
   for (let i=0; i< admins.length; i++){//! todo important ticket template updates
-    await mailer(admins[i].email,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'newTicketAdminTemplate')
+    await mailer(admins[i].email,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'ticketNewTicketAdmin')
   }
-  !await mailer(ticket.ownerEmail,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'newTicketUserTemplate')
+  !await mailer(ticket.ownerEmail,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'TicketNewTicketUser')
   
   return res.send( { response_type: `success`, message: 'Ticket Updated Successfully.', ticketId, update }); 
 })
