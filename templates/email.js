@@ -1,8 +1,19 @@
+
 const logoLiteral = `<span style="color: #6D9EEB; font-size:18px;" >
                       chapar<span style="color: #6AA84F">.tech</span>
-                    </span>`
-
+                    </span><br>`
+const ticketTemplates = require("./tickets")
 const emailTemplates = (message, template) => {
+  console.log(template, typeof template)
+  if (template.startsWith('ticket')) {
+    template = 'ticketNewTicketAdmin'
+    const functionName = ticketTemplates.template
+    console.log(functionName)
+    const result = es6template(ticketTemplates[template],message)
+    console.log(result)
+    return `${logoLiteral} ${result}`
+  }
+
   if (template == 'passwordRecoverTemplate' ){
     return `${logoLiteral}<br><br><br>
       Recovery Link:<br>Please use the following link to recover your password <br>
@@ -62,28 +73,33 @@ const emailTemplates = (message, template) => {
       
   }
 
-  if (template == 'newTicketAdminTemplate'){
-    return `${logoLiteral}<br><br><br>
-      Hej,<br>A new ticket has been created for user (${message.ownerName}, ${message.ownerEmail}). <br>
-      The ticket is accessible at: <a href="${process.env.APP_PATH}/app/support/id/${message.ticketId}" target="_blank">
-      ${process.env.APP_PATH}/app/support/id/${message.ticketId}</a><br> 
-      ----------<br>
-      subject: <b>${message.subject}</b>
-      Detail: <b>${message.updates[0].text}</b> 
-      <br>----------<br>`
-  }
-  //! update templates
-  if (template == 'newTicketUserTemplate'){
-    return `${logoLiteral}<br><br><br>
-      Hej,<br>A new ticket has been created for you (${message.ownerName}, ${message.ownerEmail}). <br>
-      The ticket is accessible at: <a href="${process.env.APP_PATH}/app/support/id/${message.ticketId}" target="_blank">
-      ${process.env.APP_PATH}/app/support/id/${message.ticketId}</a>. You need to login and check the status.<br> 
-      ----------<br>
-      subject: <b>${message.subject}</b>
-      Detail: <b>${message.updates[0].text}</b> 
-      <br>----------<br><br>
-      We try to follow the case and answer the request as soon as possible, meanwhile we thank you for your patience.`
-  }
+  // if (template == 'newTicketAdminTemplate') {
+  //   return `${logoLiteral}<br><br><br>
+  //     Hej,<br>A new ticket has been created for user (${message.ownerName}, ${message.ownerEmail}). <br>
+  //     The ticket is accessible at: <a href="${process.env.APP_PATH}/app/support/id/${message.ticketId}" target="_blank">
+  //     ${process.env.APP_PATH}/app/support/id/${message.ticketId}</a><br> 
+  //     ----------<br/><br/>
+  //     subject: <b>${message.subject}</b><br/>
+  //     Detail: <b><span style="white-space: pre-line">
+  //     ${message.updates[0].text}
+  //     </span></b>
+  //     <br>----------<br>`
+  // }
+  // if (template == 'newTicketUserTemplate') {
+  //   return `${logoLiteral}<br><br><br>
+  //     Hej,<br>A new ticket has been created for you (${message.ownerName}, ${message.ownerEmail}). <br>
+  //     The ticket is accessible at: <a href="${process.env.APP_PATH}/app/support/id/${message.ticketId}" target="_blank">
+  //     ${process.env.APP_PATH}/app/support/id/${message.ticketId}</a>. You need to login and check the status.<br> 
+  //     ----------<br/><br/>
+  //     subject: <b>${message.subject}</b><br/>
+  //     Detail: <b>
+  //     <span style="white-space: pre-line">
+  //     ${message.updates[0].text}
+  //     </span>
+  //     </b> 
+  //     <br/>----------<br/><br/>
+  //     We try to follow the case and answer the request as soon as possible, meanwhile we thank you for your patience.`
+  // }
   
   if (template == 'supplierRequestAdminTemplate') {
     return `${logoLiteral}<br><br><br>
