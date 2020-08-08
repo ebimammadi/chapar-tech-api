@@ -65,19 +65,19 @@ const emailTemplates = (message, template) => {
   if (template == 'newTicketAdminTemplate'){
     return `${logoLiteral}<br><br><br>
       Hej,<br>A new ticket has been created for user (${message.ownerName}, ${message.ownerEmail}). <br>
-      The ticket is accessible at: <a href="${process.env.APP_PATH}/app/tickets/${message.ticketId}" target="_blank">
-      ${process.env.APP_PATH}/app/tickets/${message.ticketId}</a><br> 
+      The ticket is accessible at: <a href="${process.env.APP_PATH}/app/support/id/${message.ticketId}" target="_blank">
+      ${process.env.APP_PATH}/app/support/id/${message.ticketId}</a><br> 
       ----------<br>
       subject: <b>${message.subject}</b>
       Detail: <b>${message.updates[0].text}</b> 
       <br>----------<br>`
   }
-  
+  //! update templates
   if (template == 'newTicketUserTemplate'){
     return `${logoLiteral}<br><br><br>
       Hej,<br>A new ticket has been created for you (${message.ownerName}, ${message.ownerEmail}). <br>
-      The ticket is accessible at: <a href="${process.env.APP_PATH}/app/tickets/${message.ticketId}" target="_blank">
-      ${process.env.APP_PATH}/app/tickets/${message.ticketId}</a>. You need to login and check the status.<br> 
+      The ticket is accessible at: <a href="${process.env.APP_PATH}/app/support/id/${message.ticketId}" target="_blank">
+      ${process.env.APP_PATH}/app/support/id/${message.ticketId}</a>. You need to login and check the status.<br> 
       ----------<br>
       subject: <b>${message.subject}</b>
       Detail: <b>${message.updates[0].text}</b> 
