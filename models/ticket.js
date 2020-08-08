@@ -76,10 +76,10 @@ const ticketRegisterValidate = (ticket) => {
 
 const ticketUpdateValidate = (ticket) => {
 	const schema = Joi.object({
-		ticketId: Joi.string().required().min(6).max(8),
+		ticketId: Joi.string().required().min(5).max(6),
 		ownerEmail: Joi.string().email().required(),
-		text: Joi.string().required(),
-		status: Joi.string().required(),
+		text: Joi.string().required().min(10).max(10000),
+		status: Joi.string().valid( ...validTicketStatus )
 	})
 	return schema.validate(ticket)
 }
@@ -96,7 +96,7 @@ const ticketListValidate = (ticket) => {
 
 const ticketIdValidate = (ticket) => {
 	const schema = Joi.object({
-		ticketId: Joi.string().required().min(6).max(6)
+		ticketId: Joi.string().required().min(5).max(6)
 	})
 	return schema.validate(ticket)
 }
