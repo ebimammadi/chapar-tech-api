@@ -86,7 +86,7 @@ const userSetRole = async (req, res) => {
   const previous = user.setRoleStatusPrevious()
   user.roleStatus = { status: 'pending', previous }
   await user.save()
-  await mailer(user.email, `'${user.userRole}' Access granted at ${process.env.APP_NAME}`, user, 'roleGrantedTemplate')
+  await mailer(user.email, `'${user.userRole}' Access granted at ${process.env.APP_NAME}`, user, 'UsersRoleGranted')
   return res.send({ response_type: 'success', message: `User ${user.name} 
     (${user.email}) has been set as a(n) ${user.userRole}.`, _id })
 }

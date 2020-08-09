@@ -43,7 +43,7 @@ const register = async (req, res) => {
 	user.slug = slug
 	user.emailVerifyCode = sha256( user._id + Date.now())
 	await user.save()
-	await mailer(user.email,`Welcome to ${process.env.APP_NAME}`,user,'userRegisterTemplate')
+	await mailer(user.email,`Welcome to ${process.env.APP_NAME}`,user,'AuthRegister')
 	// generate token
 	const token = user.generateAuthToken()
 	const { s } = jwt.verify(token, process.env.JWT_KEY)
@@ -86,7 +86,7 @@ const forgetPassword = async (req, res) => {
 		const uniqueID = sha256( user._id + Date.now())
 		user.set({ passwordRecoverCode: uniqueID})
 		await user.save()
-		await mailer(req.body.email,'Recovery Link', uniqueID, 'passwordRecoverTemplate').catch(console.error)
+		await mailer(req.body.email,'Recovery Link', uniqueID, 'AuthPasswordRecover')
 		return res.json({ response_type: 'success', message: `Your request would be processed shortly. Please check your mailbox.` })
 	}
 }

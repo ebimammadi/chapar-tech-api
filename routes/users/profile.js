@@ -50,14 +50,14 @@ const emailSet = async (req, res) => {
 	if (checkUser.length>0) return res.json({ response_type: 'warning', message: `This email is in use.`})
 	
 	//send warning notification to the previous email 
-	await mailer(user.email,'Warning! Email changed.', { name: user.name } , 'emailChangeWarningTemplate')
+	await mailer(user.email,'Warning! Email changed.', { name: user.name } , 'ProfileEmailChangeWarning')
 	//generate the verify link
 	user.emailVerifyCode = sha256( user._id + Date.now())
 	user.emailVerify = false
 	user.email = newEmail
 	await user.save()
 	//send verify link for the new email 
-	await mailer(user.email,`Changed 'User Email' at ${process.env.APP_NAME}`,user,'emailChangeVerifyTemplate')
+	await mailer(user.email,`Changed 'User Email' at ${process.env.APP_NAME}`,user,'ProfileEmailChangeVerify')
 	return res.send({ response_type: 'success', message: `Your email has been updated, please check your mailbox for verification.` })
 }
 
@@ -115,7 +115,7 @@ const passwordSet = async (req, res) => {
 //	console.log(`result`,await invalidateSessions(decodedToken._id, 'password-changed', decodedToken.s))
 
 	//send verify link for the new email 
-	await mailer(user.email,`Change password notice at ${process.env.APP_NAME}`,user,'passwordChangeTemplate')
+	await mailer(user.email,`Change password notice at ${process.env.APP_NAME}`,user,'ProfilePasswordChange')
 	return res.send({ response_type: 'success', message: `Your password has been changed successfully.` })
 }
 
@@ -125,7 +125,7 @@ const sendVerificationLink = async (req, res) => {
 	user.emailVerifyCode = sha256( user._id + Date.now())
 	user.emailVerify = false
 	await user.save()
-	await mailer(user.email,`Confirm your email at ${process.env.APP_NAME}`,user,'userEmailVerifyTemplate')
+	await mailer(user.email,`Confirm your email at ${process.env.APP_NAME}`,user,'ProfileUserEmailVerify')
   return res.json({ response_type:`success`, message: `Verification code 
           has been sent to your mail account. Please check your mailbox.` })
 }
@@ -184,10 +184,9 @@ const sendRequestSupplier = async (req, res) => {
 	await user.save()
 
 	let admins = await User.find({ userRole: `admin` })
-  for (let i=0; i < admins.length ; i++ ){
-    await mailer(admins[i].email,`Supplier request for [${user.email}]`,user,'supplierRequestAdminTemplate')
-	}
-	await mailer(user.email,`Supplier request received at ${process.env.APP_NAME} `,user,'supplierRequestTemplate')
+  for (let i=0; i < admins.length ; i++ )
+    await mailer(admins[i].email,`Supplier request for [${user.email}]`,user,'ProfileSupplierRequestAdmin')
+	await mailer(user.email,`Supplier request received at ${process.env.APP_NAME} `,user,'ProfileSupplierRequest')
 		
 	return res.send({ response_type: 'success', message: `Your supplier request has been received and would be proceeding very soon. 
 		Thank you for your patience.`, roleStatus: user.roleStatus })
