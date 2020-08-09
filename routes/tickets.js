@@ -6,24 +6,17 @@ const { regex } = require("../components/lib")
 const { Ticket, validateTicket } = require("../models/ticket")
 const { User } = require("../models/user")
 const mailer = require("../components/nodemailer")
-//const sendSms = require("../components/sms")
-
 const auth = require("../middleware/auth")
-//const adminAuth = require("../middleware/adminAuth")
-
 router.post('/ticket-create', auth, async (req,res) => { // 
-  //! TODO check text for invalid char
+  //! TODO check text for invalid char 
   // validate post payload (subject, ownerEmail, text
   const { error } = validateTicket.register(req.body)
   if (error) return res.json({ message: error.details[0].message })
   // check the same user or admin role to create a ticket
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
 	if (token.userRole!== "admin" && token.email !== req.body.ownerEmail ) return res.send({ message: `Ticket creation not allowed!` })
-  //main 
- 
   const user = await User.findOne({ email: req.body.ownerEmail })
   if (!user) return res.send({ message: `Invalid user email ${req.body.ownerEmail}` })
-  
   const ticket = new Ticket(_.pick(req.body, ['subject', 'ownerEmail']))
   let ticketId = '' 
   while(true){
@@ -33,16 +26,13 @@ router.post('/ticket-create', auth, async (req,res) => { //
   ticket.ownerName = user.name
   ticket.ticketId = ticketId
   ticket.status = "Open"
-  ticket.updates.push({ userEmail: token.email, userName: token.name, text: req.body.text })
-  
+  ticket.updates.push({ userEmail: token.email, userName: token.name, text: req.body.text.trim() })
   await ticket.save()
-  //admins read email from 
-  let admins = await User.find({ userRole: `admin` })
-  for (let i=0; i< admins.length; i++){
-    await mailer(admins[i].email,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'ticketNewTicketAdmin')
-  }
-  await mailer(ticket.ownerEmail,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'ticketNewTicketUser')
-  
+  //email
+  let admins = await User.find({ userRole: `admin` }) // todo: admins read email from 
+  for (let i=0; i< admins.length; i++)
+    await mailer(admins[i].email, `New ticket [${ticketId}] created at ${process.env.APP_NAME}`, ticket, 'ticketNewTicketAdmin')
+  await mailer(ticket.ownerEmail, `New ticket [${ticketId}] created at ${process.env.APP_NAME}`, ticket, 'ticketNewTicketUser')
   return res.send( {response_type: `success`, message: `Ticket '${ticketId}' created successfully.`, ticketId: ticketId}); 
 })
 
@@ -52,15 +42,12 @@ router.post('/ticket-update', auth, async (req,res) => {
   if (error) return res.json({ message: error.details[0].message })
   //check access to update the ticket
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
-	if (token.userRole!== "admin" && token.email !== req.body.user ) return res.send({ message: `Ticket update not allowed!` })
-  
+	if (token.userRole!== "admin" && token.email !== req.body.user ) return res.send({ message: `Ticket update not allowed!` })  
   const user = await User.findOne({ email: req.body.ownerEmail })
   if (!user) return res.send({ message: `Invalid user email ${req.body.ownerEmail}` })
-  
   let ticket = await Ticket.findOne({ ticketId: req.body.ticketId } )
   if (!ticket) return res.send({ message: `Invalid ticket ID ${req.body.ticketId}` })
   
-  // ticket = new Ticket(_.pick(req.body, ['subject', 'ownerEmail']))
   const ticketId = req.body.ticketId
   ticket.ownerEmail = req.body.ownerEmail
   ticket.ownerName = user.name
@@ -69,19 +56,15 @@ router.post('/ticket-update', auth, async (req,res) => {
   const update = { 
     userEmail: token.email, 
     userName: token.name, 
-    text: req.body.text,
+    text: req.body.text.trim(),
     date: ticket.updated_at
    }
-  
   ticket.updates.push(update)
-  
   await ticket.save()
-  //todo admins read email from 
-  const admins = await User.find({ userRole: `admin` })
-  for (let i=0; i< admins.length; i++){//! todo important ticket template updates
-    await mailer(admins[i].email,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'ticketNewTicketAdmin')
-  }
-  !await mailer(ticket.ownerEmail,`New ticket [${ticketId}] created at ${process.env.APP_NAME}`,ticket,'TicketNewTicketUser')
+  const admins = await User.find({ userRole: `admin` })   //todo admins read email from 
+  for (let i=0; i< admins.length; i++) //todo: for close tickets
+    await mailer(admins[i].email, `Ticket [${ticketId}] updated at ${process.env.APP_NAME}`, ticket, 'ticketUpdateTicketAdmin')
+  await mailer(ticket.ownerEmail, `Ticket [${ticketId}] updated at ${process.env.APP_NAME}`, ticket, 'ticketUpdateTicketUser')
   
   return res.send( { response_type: `success`, message: 'Ticket Updated Successfully.', ticketId, update }); 
 })
