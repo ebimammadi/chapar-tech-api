@@ -1,4 +1,3 @@
-//! non-updated
 const express = require("express")
 const router = express.Router()
 const Joi = require("joi")
@@ -13,7 +12,7 @@ const s3 = new AWS.S3({
 
 const { User } = require("../models/user")
 const auth = require("../middleware/auth")
-
+//TODO s3 error and fault handle!!!! both on the front-end ;)
 router.post('/upload-image', auth, async(req, res) => { //post payload: usage, unique, image
 	const { error } = validateUploadImage(req.body)
 	if (error) return res.json({ message: `${error.details[0].message}` })
@@ -49,7 +48,7 @@ router.get('/delete-image/:server/:filename', auth, async(req, res) => {
 	try{
 		const filename = `https://${req.params.server}/${req.params.filename}`
 		const [ usage, encodedId ] = req.params.filename.split("-")
-		//! It should be developed for other usages types 
+		//TODO It can be developed for other usages types 
 		if(usage !== "profile") return res.json({ message: `this usage '${usage}' is not allowed yet!`})
 		let { _id } = jwt.verify(req.cookies["x-auth-token"], process.env.JWT_KEY)
 		
@@ -59,13 +58,15 @@ router.get('/delete-image/:server/:filename', auth, async(req, res) => {
 		if (!user || (user.profilePhotoUrl != filename) ) return res.json({ message: `invalid file! ${filename}` })
 
 		//delete file from server
-		await removeFromS3(filename)
+		const result = await removeFromS3(filename)
+
 		//update filename in db
 		user.set({ profilePhotoUrl: '' })
 		await user.save();	
 		//return
 		return res.json({ response_type: 'success', url: filename, message: `${filename} removed successfully.` })
 	}catch(err){
+		
 		return res.json({ message: err.message })
 	}
 
@@ -79,8 +80,12 @@ const removeFromS3 = (file) => {
   };
 	return new Promise ( (resolve, reject) => {
     s3.deleteObject(s3Params, function(err, data) {
-      if (err) reject (err.stack)
-      else resolve(data)
+
+      if (err) {
+				console.log(`error`,err.stack)
+				reject (err.stack)
+			}
+			else resolve(data)
     })
 	})
 }
