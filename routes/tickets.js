@@ -42,7 +42,7 @@ router.post('/ticket-update', auth, async (req,res) => {
   if (error) return res.json({ message: error.details[0].message })
   //check access to update the ticket
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
-	if (token.userRole!== "admin" && token.email !== req.body.user ) return res.send({ message: `Ticket update not allowed!` })  
+	if (token.userRole!== "admin" && token.email !== req.body.ownerEmail ) return res.send({ message: `Ticket update not allowed!` })  
   const user = await User.findOne({ email: req.body.ownerEmail })
   if (!user) return res.send({ message: `Invalid user email ${req.body.ownerEmail}` })
   let ticket = await Ticket.findOne({ ticketId: req.body.ticketId } )

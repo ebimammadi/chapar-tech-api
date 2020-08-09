@@ -87,7 +87,7 @@ const ticketUpdateValidate = (ticket) => {
 const ticketListValidate = (ticket) => {
 	const schema = Joi.object({
 		page: Joi.number().integer(),
-		userRole: Joi.string().allow('').valid( ...validTicketStatus ),
+		status: Joi.string().allow('').valid( ...validTicketStatus ),
 		search: Joi.string().allow('').max(64),
 		email: Joi.string().email()
 	})
