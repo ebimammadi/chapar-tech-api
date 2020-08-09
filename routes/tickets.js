@@ -80,9 +80,9 @@ router.get('/ticket-list', auth, async (req, res) => {
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
   const ownerEmail = (token.userRole === "admin") ? regex(req.query.email || '') :  token.email
   const status = regex(req.query.status || '')
-  const search = regex(req.query.search || '')
+  const search = regex(req.query.search.trim() || '')
   const findOptions = {
-    $and: [ { status: status }, { subject: search }, { ownerEmail: ownerEmail} ]
+    $and: [ { status: status }, { $or: [ { subject: search }, {ticketId: search }] }, { ownerEmail: ownerEmail} ]
   }
   const result = await Ticket.aggregate([
     { $sort: {updated_at: -1} },

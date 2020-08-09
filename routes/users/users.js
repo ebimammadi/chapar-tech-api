@@ -13,7 +13,7 @@ const userList = async (req, res) => {
   const page = parseInt(req.query.page) || 1
   const skip = (page-1) * perPage
   const userRole = regex(req.query.userRole || '')
-  const search = regex(req.query.search || '')
+  const search = regex(req.query.search.trim() || '')
   const findOptions = {
     $and: [ { $or: [ { name: search }, { email: search } ] }, { userRole: userRole } ],
   }
