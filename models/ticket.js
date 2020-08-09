@@ -57,7 +57,7 @@ const ticketSchema = new mongoose.Schema({
 
 ticketSchema.methods.generateTicketId = function (length = 6) {
 	let id = ''
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   const charactersLength = characters.length
   for ( let i = 0; i < length; i++ ) id += characters.charAt(Math.floor(Math.random() * charactersLength))
   return id
