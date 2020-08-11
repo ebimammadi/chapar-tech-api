@@ -6,6 +6,7 @@ const coursesRoutes = require("../routes/courses")
 const usersRoute = require("../routes/users")
 const fileRoutes = require("../routes/files")
 const ticketRoutes = require("../routes/tickets")
+const productsRoutes = require("../routes/products")
 
 const error = require("../middleware/error")
 
@@ -19,6 +20,7 @@ module.exports = function(app) {
   router.use('/users', usersRoute)
   router.use('/files', fileRoutes)
   router.use('/tickets', ticketRoutes)
+  router.use('/products', productsRoutes)
 
   router.use( error)
 
