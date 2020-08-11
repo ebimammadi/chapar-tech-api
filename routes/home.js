@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router(); 
 
 const auth = require('../middleware/auth')
-const mailer = require("../../components/nodemailer")
+const mailer = require("../components/nodemailer")
 
 router.get('/', auth, (req,res) => {
 	return res.json({ message: 'What are you looking for!' })
