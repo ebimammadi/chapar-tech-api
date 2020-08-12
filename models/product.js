@@ -18,7 +18,10 @@ const productSchema = new mongoose.Schema({
 		type: String, 
 	},
 	features: [String],
-
+	date: { 
+		type: Date,
+		default: Date.now
+	},
 	publishStatus: {
 		type: Boolean,
 		default: false
@@ -28,14 +31,22 @@ const productSchema = new mongoose.Schema({
 		default: '' 
 	},
 	images: [String],
-	
+	ownerId: { 
+		type: mongoose.Types.ObjectId,
+		required: true
+	}
 })
 
 const Product = mongoose.model('Product', productSchema)
 
 const productAddValidate = (product) => {
 	const schema = Joi.object({
-		
+		name: Joi.string().required().max(200),
+		slug: Joi.string().required().max(200),	
+		description: Joi.string().required().max(1000),	
+		features: Joi.array().items(Joi.string().required().max(200).allow('')),
+		images: Joi.array().items(Joi.string().required().max(200).allow('')),
+		ownerId: Joi.objectId().allow('') 
 	})
 	return schema.validate(product)
 }
