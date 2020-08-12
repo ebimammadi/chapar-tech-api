@@ -119,24 +119,6 @@ const logout = async (req, res) => {
 	}
 }
 
-const me = async (req, res) => {
-  try {
-		const token = req.cookies["x-auth-token"]
-		const decodedToken = jwt.verify(token, process.env.JWT_KEY)
-		const result = await refreshSession(decodedToken.s, token)
-		if (!result ) return res.send( {} )
-		const user = await User.findOne( { _id: decodedToken._id })
-		const me = _.pick( user, ["email", "name", "profilePhotoUrl", "userRole" ] )
-		if  ( !_.isEqual(me, _.pick( decodedToken, ["email", "name", "profilePhotoUrl", "userRole" ] ))) {
-			const newToken = user.generateAuthToken(decodedToken.s)
-			res.cookie('x-auth-token', newToken, cookieOptions)
-		}
-		return res.send(me)
-	} catch (_) {
-		return res.send( {} )
-	}
-}
-
 module.exports = {
   login,
   register,
@@ -144,6 +126,5 @@ module.exports = {
   forgetPassword,
   recoverPasswordVerifyCode,
   verifyEmail,
-  logout,
-  me 
+  logout
 }

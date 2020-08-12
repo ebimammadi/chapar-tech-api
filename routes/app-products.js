@@ -4,12 +4,12 @@ const _ =require("lodash")
 const jwt = require("jsonwebtoken")
 const { regex } = require("../components/lib")
 const { Product, validateProducts } = require("../models/product")
-const { User } = require("../models/user")
+// const { User } = require("../models/user")
 
 const auth = require("../middleware/auth")
 const supplierAuth = require("../middleware/supplierAuth")
 
-const checkUniqueSlug = async (slug) => {
+const checkUniqueSlugProduct = async (slug) => {
   slug.trim().toLowerCase().split(" ").join("-")	
   while(true){
     if (!await Product.findOne({ slug })) break
@@ -21,7 +21,7 @@ const checkUniqueSlug = async (slug) => {
 //delete product image
 
 router.post('/product-add', auth, supplierAuth, async (req,res) => { // 
-  // validate post payload (name, slug, description, features, images)
+  // validate post payload (name, slug, description, features, images, _id)
   const { error } = validateProducts.productAdd(req.body)
   if (error) return res.json({ message: error.details[0].message })
 
@@ -29,7 +29,7 @@ router.post('/product-add', auth, supplierAuth, async (req,res) => { //
   if (token.userRole !== 'supplier' && token.userRole !== 'admin' ) 
     return res.send({ message: `Product add not allowed!` })
 
-  const slug = checkUniqueSlug(req.body.slug)
+  const slug = checkUniqueSlugProduct(req.body.slug)
   const product = new Product({ 
     ..._.pick(req.body, ['name', 'description', 'features', 'images']), 
     slug, 

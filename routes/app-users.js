@@ -4,12 +4,12 @@ const router = express.Router()
 const auth = require("../middleware/auth")
 const adminAuth = require("../middleware/adminAuth")
 
-const authFunction = require("./users/auth")
-const profileFunction = require("./users/profile")
-const usersFunction = require("./users/users")
+const authFunction = require("./app-users/auth")
+const profileFunction = require("./app-users/profile")
+const usersFunction = require("./app-users/users")
 
 //authRoutes
-router.get('/me', async (req,res) => await authFunction.me(req, res))
+//router.get('/me', async (req,res) => await authFunction.me(req, res))
 router.post('/register', async (req,res) => await authFunction.register(req, res))
 router.post('/login', async (req, res) => await authFunction.login(req, res))
 router.post('/recover-password', async (req, res) => await authFunction.recoverPassword(req, res))
