@@ -14,7 +14,7 @@ module.exports = (app) => {
   app.use(express.json({ limit: '16mb' }))
   app.use(express.urlencoded({ limit: '16mb',extended: true }))
   app.use(bodyParser.json({ limit: '16mb' }))
-  app.use(express.urlencoded({ limit: '16mb',extended: true }))
+  app.use(bodyParser.urlencoded({ limit: '16mb',extended: true }))
   app.use(cookieParser())
   app.use(responseHeaderConfig); //configures the header for requests  
   
