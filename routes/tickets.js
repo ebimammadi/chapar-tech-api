@@ -105,7 +105,7 @@ router.get('/ticket-list', auth, async (req, res) => {
 })
 
 router.get('/ticket-get/:ticketId', auth, async (req, res) => {
-  // req.query: ticketId, page, email, status
+  // req.query: ticketId
   const { error } = validateTicket.ticketId(req.params)
   if (error) return res.json({ message: error.details[0].message })
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
