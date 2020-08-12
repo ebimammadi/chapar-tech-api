@@ -6,7 +6,7 @@ const responseHeaderConfig = function (req, res, next) {
 
 const cookieOptions = { 
 	maxAge: parseInt(parseFloat(process.env.JWT_EXP_HOUR)*3600*1000), 
-	sameSite: 'none',
+	sameSite: 'Strict',
 	secure: true,
 	httpOnly: true
 }
