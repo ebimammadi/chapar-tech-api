@@ -46,7 +46,7 @@ const productAddValidate = (product) => {
 		description: Joi.string().required().max(1000),	
 		features: Joi.array().items(Joi.string().required().max(200).allow('')),
 		images: Joi.array().items(Joi.string().required().max(200).allow('')),
-		ownerId: Joi.objectId().allow('') 
+		_id: Joi.objectId().allow(''),
 	})
 	return schema.validate(product)
 }
