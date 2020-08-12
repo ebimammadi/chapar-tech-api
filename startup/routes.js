@@ -3,7 +3,7 @@ const router = express.Router()
 
 const homeRoutes = require("../routes/home")
 const appUsersRoute = require("../routes/app-users")
-const fileRoutes = require("../routes/files")
+const appFileRoutes = require("../routes/app-files")
 const appTicketRoutes = require("../routes/app-tickets")
 const appProductsRoutes = require("../routes/app-products")
 
@@ -17,7 +17,7 @@ module.exports = function(app) {
   router.use('/about', homeRoutes)
   router.use('/me', homeRoutes)
   router.use('/app-users', appUsersRoute)
-  router.use('/files', fileRoutes)
+  router.use('/app-files', appFileRoutes)
   router.use('/app-tickets', appTicketRoutes)
   router.use('/app-products', appProductsRoutes)
 
