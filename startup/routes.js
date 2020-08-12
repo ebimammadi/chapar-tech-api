@@ -2,11 +2,10 @@ const express = require('express')
 const router = express.Router()
 
 const homeRoutes = require("../routes/home")
-const coursesRoutes = require("../routes/courses")
-const usersRoute = require("../routes/users")
+const appUsersRoute = require("../routes/app-users")
 const fileRoutes = require("../routes/files")
-const ticketRoutes = require("../routes/tickets")
-const productsRoutes = require("../routes/products")
+const appTicketRoutes = require("../routes/app-tickets")
+const appProductsRoutes = require("../routes/app-products")
 
 const error = require("../middleware/error")
 
@@ -16,11 +15,11 @@ module.exports = function(app) {
   //Routes
   router.use('/', homeRoutes)
   router.use('/about', homeRoutes)
-  router.use('/courses', coursesRoutes)
-  router.use('/users', usersRoute)
+  router.use('/me', homeRoutes)
+  router.use('/app-users', appUsersRoute)
   router.use('/files', fileRoutes)
-  router.use('/tickets', ticketRoutes)
-  router.use('/products', productsRoutes)
+  router.use('/app-tickets', appTicketRoutes)
+  router.use('/app-products', appProductsRoutes)
 
   router.use( error)
 
