@@ -11,4 +11,5 @@ module.exports = function() {
 	  .then( () => console.log(`MongoDB connected`))
 	  .catch( (err) => winston.error(`Error connecting MongoDB:` ,err))
   mongoose.set('useCreateIndex', true)
+  mongoose.set('useFindAndModify', false)
 }
