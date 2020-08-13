@@ -10,8 +10,9 @@ const appProductsRoutes = require("../routes/app-products")
 const error = require("../middleware/error")
 
 module.exports = function(app) {
-
+  
   app.use('/api', router)
+  
   //Routes
   router.use('/', homeRoutes)
   router.use('/about', homeRoutes)
@@ -21,6 +22,5 @@ module.exports = function(app) {
   router.use('/app-tickets', appTicketRoutes)
   router.use('/app-products', appProductsRoutes)
 
-  router.use( error)
-
+  router.use(error)
 }
