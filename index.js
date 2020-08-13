@@ -10,4 +10,4 @@ require("./startup/config")()					// config
 require("./startup/validation")()			// Joi validation
 
 const port = process.env.PORT || 8080 
-app.listen(port,() => console.log(`Listing on port ${port}...`) )
+app.listen(port,() => console.log(`Listening on port ${port}...`) )
