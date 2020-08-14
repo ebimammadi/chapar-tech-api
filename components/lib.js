@@ -1,4 +1,4 @@
-const path = require('path')
+//const path = require('path')
 
 const regexUrl = new RegExp('^(https?:\\/\\/)?'+ // protocol
   '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -9,9 +9,6 @@ const regexUrl = new RegExp('^(https?:\\/\\/)?'+ // protocol
 
 const regexSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
-//new RegExp('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')
-
-//some custom functions
 const escapeText = (text) => {
 	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")
 }
@@ -35,7 +32,9 @@ const utcNow = () => {
 }
 
 const toHex = (char = '') => char.charCodeAt(0).toString(16)
+
 const encodeHex = (str = '') => str.split('').map(toHex).join('')
+
 const decodeHex = (hex = '') => {
 	const result = []
 	for (let i = 0; i < hex.length; i += 2) {
@@ -45,7 +44,12 @@ const decodeHex = (hex = '') => {
 }
 
 module.exports = { 
-  regexUrl, regexSlug, escapeText, regex, validateURL, utcNow,
+  regexUrl, 
+  regexSlug, 
+  escapeText, 
+  regex, 
+  validateURL, 
+  utcNow,
   encodeHex,
   decodeHex
 }
