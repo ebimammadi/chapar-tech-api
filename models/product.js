@@ -47,6 +47,14 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema)
 
+const checkUniqueProductSlug = async (slug) => {
+  slug.trim().toLowerCase().split(" ").join("-")	
+  while(true){
+    if (!await Product.findOne({ slug })) break
+    slug = slug + (Math.floor(Math.random() * 10) + 1) 
+  }
+}
+
 const generateProductSlug = async (givenName) => {
 	let slug = givenName.toLowerCase().split(" ").map(item => item.slice(0,2)).join("")
 	while(true) {
@@ -78,6 +86,7 @@ const productListValidate = (product) => {
 
 exports.Product = Product
 exports.generateProductSlug = generateProductSlug
+exports.checkUniqueProductSlug = checkUniqueProductSlug
 exports.validateProduct = { 
 	productAdd: productAddValidate,
 	productList: productListValidate

@@ -3,25 +3,16 @@ const router = express.Router()
 const _ =require("lodash")
 const jwt = require("jsonwebtoken")
 const { regex } = require("../components/lib")
-const { Product, validateProducts } = require("../models/product")
-// const { User } = require("../models/user")
+const { Product, validateProducts, checkUniqueProductSlug } = require("../models/product")
+
 
 const auth = require("../middleware/auth")
 const supplierAuth = require("../middleware/supplierAuth")
 
-const checkUniqueSlugProduct = async (slug) => {
-  slug.trim().toLowerCase().split(" ").join("-")	
-  while(true){
-    if (!await Product.findOne({ slug })) break
-    slug = slug + (Math.floor(Math.random() * 10) + 1) 
-  }
-}
-
-//add product-image
-//delete product image
-
+//Todo check product add //todo need to product-update 
+//! TODO product set
 router.post('/product-add', auth, supplierAuth, async (req,res) => { // 
-  // validate post payload (name, slug, description, features, images, _id)
+  // validate post payload (name, slug, description, features, _id)
   const { error } = validateProducts.productAdd(req.body)
   if (error) return res.json({ message: error.details[0].message })
 
@@ -29,7 +20,7 @@ router.post('/product-add', auth, supplierAuth, async (req,res) => { //
   if (token.userRole !== 'supplier' && token.userRole !== 'admin' ) 
     return res.send({ message: `Product add not allowed!` })
 
-  const slug = checkUniqueSlugProduct(req.body.slug)
+  const slug = checkUniqueProductSlug(req.body.slug)
   const product = new Product({ 
     ..._.pick(req.body, ['name', 'description', 'features', 'images']), 
     slug, 
@@ -40,6 +31,7 @@ router.post('/product-add', auth, supplierAuth, async (req,res) => { //
     You need to review the product and then publish it on the website.`})
 })
 
+//todo need to update
 router.get('/product-list', auth, supplierAuth, async (req, res) => {
   // req.query: search, page, email, status
   const { error } = validateTicket.ticketList(req.query)
@@ -55,7 +47,7 @@ router.get('/product-list', auth, supplierAuth, async (req, res) => {
   const findOptions = {
     $and: [ { status: status }, { $or: [ { subject: search }, {ticketId: search }] }, { ownerEmail: ownerEmail} ]
   }
-  const result = await Ticket.aggregate([
+  const result = await Product.aggregate([
     { $sort: {updated_at: -1} },
     { $match: findOptions },
     { $facet: {
@@ -75,6 +67,6 @@ router.get('/product-list', auth, supplierAuth, async (req, res) => {
   return res.json( { perPage, count: result[0].count, tickets })
 })
 
-
+//todo need to product-update 
 
 module.exports = router
