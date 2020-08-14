@@ -7,12 +7,12 @@ const Joi = require('joi')
 const productSchema = new mongoose.Schema({  
   name: { 
 		type: String, 
-		required: true
+		default: '',
 	},
 	slug: {
 		type: String, 
-		required: true,
 		unique: true,
+		sparse: true
 	},
 	description: { 
 		type: String, 
@@ -37,7 +37,23 @@ const productSchema = new mongoose.Schema({
 	}
 })
 
+// productSchema.methods.generateSlug = async function(givenName) {
+// 	let slug = givenName.slice(0,3)
+// 	while(true) {
+// 		if (! await this.findOne({ slug })) return slug
+// 		slug = slug + (Math.floor(Math.random() * 10) + 1) 
+// 	}
+// }
+
 const Product = mongoose.model('Product', productSchema)
+
+const generateProductSlug = async (givenName) => {
+	let slug = givenName.toLowerCase().split(" ").map(item => item.slice(0,2)).join("")
+	while(true) {
+		if (! await Product.findOne({ slug })) return slug
+		slug = slug + (Math.floor(Math.random() * 10) + 1) 
+	}
+}
 
 const productAddValidate = (product) => {
 	const schema = Joi.object({
@@ -45,7 +61,7 @@ const productAddValidate = (product) => {
 		slug: Joi.string().required().max(200),	
 		description: Joi.string().required().max(1000),	
 		features: Joi.array().items(Joi.string().required().max(200).allow('')),
-		images: Joi.array().items(Joi.string().required().max(200).allow('')),
+		// images: Joi.array().items(Joi.string().required().max(200).allow('')),
 		_id: Joi.objectId().allow('')
 	})
 	return schema.validate(product)
@@ -61,6 +77,7 @@ const productListValidate = (product) => {
 }
 
 exports.Product = Product
+exports.generateProductSlug = generateProductSlug
 exports.validateProduct = { 
 	productAdd: productAddValidate,
 	productList: productListValidate
