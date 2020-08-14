@@ -34,7 +34,7 @@ const register = async (req, res) => {
 	let user = await User.findOne({ email: req.body.email })
 	if (user) return res.json({ message: `This email address is registered before.` })
 	let slug = req.body.name.trim().toLowerCase().split(" ").join("-")	
-	while(true){
+	while(true) {
 		if (!await User.findOne({ slug })) break
 		slug = slug + (Math.floor(Math.random() * 10) + 1) 
 	}
