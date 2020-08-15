@@ -10,7 +10,7 @@ const connectionOptions = {
 module.exports = function() {
 
   process.on('uncaughtException', (ex) => {
-    new winston.transports.Console({ colorize: true, prettyPrint: true })
+    new winston.transports.Console({ level: 'silly', colorize: true, prettyPrint: true, timestamp: true })
     new winston.transports.File({ filename: 'log-file.log' })
     new winston.transports.MongoDB({ 
       db: process.env.DB_CONNECT, 
@@ -21,7 +21,7 @@ module.exports = function() {
   })
 
   process.on('unhandledException', (ex) => {
-    new winston.transports.Console({ colorize: true, prettyPrint: true })
+    new winston.transports.Console({ level: 'silly', colorize: true, prettyPrint: true, timestamp: true })
     new winston.transports.File({ filename: 'log-file.log' })
     new winston.transports.MongoDB({ 
       db: process.env.DB_CONNECT, 
@@ -30,8 +30,8 @@ module.exports = function() {
     })
     winston.log("We got an UNHANDLED exception:", ex)
   })
-
-  winston.add( new winston.transports.Console({ colorize: true, prettyPrint: true }) )
+  winston.format.prettyPrint()
+  winston.add( new winston.transports.Console({ level: 'silly', colorize: true, prettyPrint: true, timestamp: true }) )
   winston.add( new winston.transports.File({ filename: 'log-file.log' }) )
   winston.add( new winston.transports.MongoDB({ 
     db: process.env.DB_CONNECT, 
