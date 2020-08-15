@@ -1,22 +1,17 @@
-
-//const Joi = require("joi")
-//const sha256 = require("js-sha256")
 const jwt = require ("jsonwebtoken")
-//const isBase64 = require("is-base64")
+
 const winston = require("winston")
 const { User } = require("../../models/user")
 const { Product, generateProductSlug } = require("../../models/product") 
 const { fileNameKeyGenerator } = require("../../models/file")
-//const { encodeHex, decodeHex } = require("../../components/lib")
+
 const { uploadToS3, removeFromS3 } = require("../../components/s3")
-//const validPrefixes = ['profile','product','point','receipt']
 
 const uploadProductImage = async (req, res) => {
 	//payload: usage, unique, image, _id
 	const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const ownerId = token._id
 	let _id = req.body._id
-	console.log(_id)
 	if (_id != "") {
 		if (!await Product.findById({ _id })) return res.json({ message: 'Invalid product id.'})
 	}
