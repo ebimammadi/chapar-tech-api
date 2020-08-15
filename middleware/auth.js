@@ -21,4 +21,22 @@ const auth = async(req, res, next) => {
 	}
 }
 
-module.exports = auth
+const adminAuth = (req, res, next) => {
+	const token = req.cookies["x-auth-token"]
+	if (!token) return res.status(403).json({ message: '' })
+  const { userRole } = jwt.verify(token, process.env.JWT_KEY)
+  if ( userRole !== "admin" ) 
+    return res.status(403).json({ message: '' })
+  next()
+}
+
+const supplierAuth = (req, res, next) => {
+	const token = req.cookies["x-auth-token"]
+	if (!token) return res.status(403).json({ message: '' })
+  const { userRole } = jwt.verify(token, process.env.JWT_KEY)
+  if ( userRole !== "admin" && userRole !== "supplier") 
+    return res.status(403).json({ message: '' })
+  next()
+}
+
+module.exports = { auth, adminAuth, supplierAuth }
