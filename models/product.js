@@ -6,16 +6,19 @@ const Joi = require('joi')
 //schema validate mongoose
 const productSchema = new mongoose.Schema({  
   name: { 
-		type: String, 
+		type: String,
+		maxlength: 200, 
 		default: '',
 	},
 	slug: {
-		type: String, 
+		type: String,
+		maxlength: 20, 
 		unique: true,
 		sparse: true
 	},
 	description: { 
 		type: String, 
+		maxlength: 1000
 	},
 	features: [String],
 	date: { 
@@ -37,6 +40,9 @@ const productSchema = new mongoose.Schema({
 	},
 	ownerSlug: {
 		type: String
+	},
+	ownerName: {
+		type: String
 	}
 })
 
@@ -50,16 +56,8 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema)
 
-const checkUniqueProductSlug = async (slug) => {
-  slug.trim().toLowerCase().split(" ").join("-")	
-  while(true){
-    if (!await Product.findOne({ slug })) return slug
-    slug = slug + (Math.floor(Math.random() * 10) + 1) 
-  }
-}
-
 const generateProductSlug = async (givenName) => {
-	let slug = givenName.toLowerCase().split(" ").map(item => item.slice(0,2)).join("")
+	let slug = givenName.toLowerCase().split(" ").map(item => item.slice(0,2)).join("-")
 	while(true) {
 		if (! await Product.findOne({ slug })) return slug
 		slug = slug + (Math.floor(Math.random() * 10) + 1) 
@@ -69,8 +67,8 @@ const generateProductSlug = async (givenName) => {
 const productSetValidate = (product) => {
 	const schema = Joi.object({
 		name: Joi.string().required().max(200),
-		slug: Joi.string().required().max(200),	
-		description: Joi.string().required().max(1000),	
+		slug: Joi.string().required().max(20),	
+		description: Joi.string().required().allow('').max(500),	
 		features: Joi.array().items(Joi.string().required().max(200).allow('')),
 		// images: Joi.array().items(Joi.string().required().max(200).allow('')),
 		_id: Joi.objectId().allow('')
@@ -81,13 +79,14 @@ const productSetValidate = (product) => {
 const productListValidate = (product) => {
 	const schema = Joi.object({
 		page: Joi.number().integer(),
-		status: Joi.string().allow('').valid( ...validProductStatus ),
-		search: Joi.string().allow('').max(64)
+		publishStatus: Joi.string().allow('').valid( ["true","false"] ),
+		search: Joi.string().allow('').max(64),
+		ownerId: Joi.objectId().allow('')
 	})
 	return schema.validate(product)
 }
 
-const productDeleteValidate = (product) => {
+const productIdValidate = (product) => {
 	const schema = Joi.object({
 		_id: Joi.objectId()
 	})
@@ -96,9 +95,8 @@ const productDeleteValidate = (product) => {
 
 exports.Product = Product
 exports.generateProductSlug = generateProductSlug
-exports.checkUniqueProductSlug = checkUniqueProductSlug
 exports.validateProduct = { 
 	productSet: productSetValidate,
-	productDelete: productDeleteValidate,
+	productId: productIdValidate,
 	productList: productListValidate
 }
