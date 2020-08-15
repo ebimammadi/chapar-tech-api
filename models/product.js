@@ -26,8 +26,8 @@ const productSchema = new mongoose.Schema({
 		default: Date.now
 	},
 	publishStatus: {
-		type: Boolean,
-		default: false
+		type: String,
+		default: 'false'
 	},
 	status: { 
 		type: String,
@@ -39,10 +39,12 @@ const productSchema = new mongoose.Schema({
 		required: true
 	},
 	ownerSlug: {
-		type: String
+		type: String,
+		default: ''
 	},
 	ownerName: {
-		type: String
+		type: String,
+		default: ''
 	}
 })
 
@@ -79,7 +81,7 @@ const productSetValidate = (product) => {
 const productListValidate = (product) => {
 	const schema = Joi.object({
 		page: Joi.number().integer(),
-		publishStatus: Joi.string().allow('').valid( ["true","false"] ),
+		publishStatus: Joi.string().allow('').valid( ...["true","false"] ),
 		search: Joi.string().allow('').max(64),
 		ownerId: Joi.objectId().allow('')
 	})
