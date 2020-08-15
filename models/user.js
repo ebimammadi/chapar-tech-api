@@ -95,7 +95,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.methods.generateAuthToken = function(session_id) {
-	const payload = _.pick(this, ['email','name','_id','userRole','profilePhotoUrl'])
+	const payload = _.pick(this, ['email','name','_id','userRole','slug','profilePhotoUrl'])
 	payload.s = (session_id) ? session_id: sha256( this._id + Date.now() ) //note: how this works! ;)
 	payload.exp = Math.floor(Date.now() / 1000) + (parseFloat(process.env.JWT_EXP_HOUR) * 3600)
 	return jwt.sign( payload, process.env.JWT_KEY )
