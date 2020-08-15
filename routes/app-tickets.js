@@ -6,7 +6,7 @@ const { regex } = require("../components/lib")
 const { Ticket, validateTicket } = require("../models/ticket")
 const { User } = require("../models/user")
 const mailer = require("../components/nodemailer")
-const auth = require("../middleware/auth")
+const { auth } = require("../middleware/auth")
 router.post('/ticket-create', auth, async (req,res) => { // 
   //! TODO check text for invalid char 
   // validate post payload (subject, ownerEmail, text

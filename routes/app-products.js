@@ -5,13 +5,11 @@ const jwt = require("jsonwebtoken")
 const { regex } = require("../components/lib")
 const { Product, validateProducts, checkUniqueProductSlug } = require("../models/product")
 
-
-const auth = require("../middleware/auth")
-const supplierAuth = require("../middleware/supplierAuth")
+const { auth, supplierAuth } = require("../middleware/auth")
 
 //Todo check product add //todo need to product-update 
 //! TODO product set
-router.post('/product-add', auth, supplierAuth, async (req,res) => { // 
+router.post('/product-set', auth, supplierAuth, async (req,res) => { // 
   // validate post payload (name, slug, description, features, _id)
   const { error } = validateProducts.productAdd(req.body)
   if (error) return res.json({ message: error.details[0].message })
