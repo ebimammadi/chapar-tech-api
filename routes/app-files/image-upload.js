@@ -10,13 +10,15 @@ const uploadProductImage = async (req, res) => {
 	//payload: usage, unique, image, _id
 	const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const ownerId = token._id
+	const ownerName = token.name
+	const ownerSlug = token.slug
 	let _id = req.body._id
 	if (_id != "") {
 		if (!await Product.findById({ _id })) return res.json({ message: 'Invalid product id.'})
 	}
 	else {
 		const slug = await generateProductSlug(token.name) 
-		const product = await new Product({ ownerId, slug, name: slug })
+		const product = await new Product({ ownerId, ownerName, ownerSlug, slug, name: slug })
 		_id = product._id
 		product.save()
 	}
