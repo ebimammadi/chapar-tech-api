@@ -34,6 +34,9 @@ const productSchema = new mongoose.Schema({
 	ownerId: { 
 		type: mongoose.Types.ObjectId,
 		required: true
+	},
+	ownerSlug: {
+		type: String
 	}
 })
 
@@ -50,7 +53,7 @@ const Product = mongoose.model('Product', productSchema)
 const checkUniqueProductSlug = async (slug) => {
   slug.trim().toLowerCase().split(" ").join("-")	
   while(true){
-    if (!await Product.findOne({ slug })) break
+    if (!await Product.findOne({ slug })) return slug
     slug = slug + (Math.floor(Math.random() * 10) + 1) 
   }
 }
@@ -63,7 +66,7 @@ const generateProductSlug = async (givenName) => {
 	}
 }
 
-const productAddValidate = (product) => {
+const productSetValidate = (product) => {
 	const schema = Joi.object({
 		name: Joi.string().required().max(200),
 		slug: Joi.string().required().max(200),	
@@ -84,10 +87,18 @@ const productListValidate = (product) => {
 	return schema.validate(product)
 }
 
+const productDeleteValidate = (product) => {
+	const schema = Joi.object({
+		_id: Joi.objectId()
+	})
+	return schema.validate(product)
+}
+
 exports.Product = Product
 exports.generateProductSlug = generateProductSlug
 exports.checkUniqueProductSlug = checkUniqueProductSlug
 exports.validateProduct = { 
-	productAdd: productAddValidate,
+	productSet: productSetValidate,
+	productDelete: productDeleteValidate,
 	productList: productListValidate
 }
