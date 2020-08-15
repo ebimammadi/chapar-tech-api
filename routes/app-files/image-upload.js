@@ -1,5 +1,4 @@
 const jwt = require ("jsonwebtoken")
-
 const winston = require("winston")
 const { User } = require("../../models/user")
 const { Product, generateProductSlug } = require("../../models/product") 
