@@ -26,7 +26,7 @@ const profileSet = async (req, res) => {
 	// check for unique slug
 	const checkUser = await User.find( { slug: req.body.slug, _id: { $ne: _id} } )
 	if (checkUser.length>0) return res.json({ message: `This slug is in use.` })
-	
+	//! slug change - change products slugs as well as slug in user collection
 	const user = await User.findById(_id)
 	user.set({ name: req.body.name, urls: req.body.urls, slug: req.body.slug })
 	await user.save()
