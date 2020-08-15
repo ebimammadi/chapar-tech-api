@@ -16,6 +16,7 @@ const uploadProductImage = async (req, res) => {
 	const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
 	const ownerId = token._id
 	let _id = req.body._id
+	console.log(_id)
 	if (_id != "") {
 		if (!await Product.findById({ _id })) return res.json({ message: 'Invalid product id.'})
 	}
