@@ -110,7 +110,12 @@ router.get('/product-list', auth, supplierAuth, async (req, res) => {
     }
   ])
   if (result.length == 0) return res.json( { count: 0, products: [], perPage } )
-  const products = result[0].data.map ( product => _.omit( product, ["__v"]) )
+  const products = result[0].data.map ( product => 
+    _.defaults( 
+      _.omit( product, ["__v"]), 
+      { description: '',ownerName: '', ownerSlug: '', publishStatus: 'false' } 
+    )
+  )
   return res.json( { perPage, count: result[0].count, products })
 })
 

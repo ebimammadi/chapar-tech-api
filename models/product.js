@@ -18,13 +18,15 @@ const productSchema = new mongoose.Schema({
 	},
 	description: { 
 		type: String, 
-		maxlength: 1000
+		maxlength: 1000,
+		default: ''
 	},
 	features: [String],
 	date: { 
 		type: Date,
 		default: Date.now
 	},
+	
 	publishStatus: {
 		type: String,
 		default: 'false'
