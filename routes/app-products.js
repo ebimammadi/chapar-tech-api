@@ -45,9 +45,9 @@ router.post('/product-delete', auth, supplierAuth, async (req, res) => {
   if (error) return res.json({ message: error.details[0].message })
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
   const product = await Product.findById(req.body._id) 
-  if (!product) return res.send({ message: 'Invalid product Id' })
-  if (product.ownerId !== token._id) return res.send({ message: 'You are not allowed to change this product.' })
-  const result = await product.remove()
+  if (!product) return res.send({ message: 'Invalid product Id.' })
+  if (product.ownerId.toString() !== token._id) return res.send({ message: 'You are not allowed to change this product.' })
+  await product.remove()
   return res.send({ response_type: "success", message: "" })  
 })
 
@@ -62,7 +62,7 @@ router.get('/product-get/:_id', auth, supplierAuth, async (req, res) => {
 	if (error) return res.json({ message: error.details[0].message })
   const token = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
   const product = await Product.findById(req.params._id) 
-  if (!product) return res.send({ message: 'Invalid product Id' })
+  if (!product) return res.send({ message: 'Invalid product Id.' })
   if (product.ownerId.toString() !== token._id) return res.send({ message: 'You are not allowed to view this product.' })
   return res.send({ 
     response_type: "success", 
