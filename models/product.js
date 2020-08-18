@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 //const validProductStatus = [ '', 'new', 'unavailable'  ]
+//const currencies = [ 'SEK', 'EUR', 'USD' ]
 
 //schema validate mongoose
 const productSchema = new mongoose.Schema({  
@@ -26,7 +27,10 @@ const productSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-	
+	updated_at: {
+		type: Date,
+		default: Date.now
+	},
 	publishStatus: {
 		type: String,
 		default: 'false'
@@ -35,7 +39,10 @@ const productSchema = new mongoose.Schema({
 		type: String,
 		default: '' 
 	},
-	images: [String],
+	images: [{
+		type: String,
+		maxlength: 500
+	}],
 	ownerId: { 
 		type: mongoose.Types.ObjectId,
 		required: true
@@ -47,6 +54,21 @@ const productSchema = new mongoose.Schema({
 	ownerName: {
 		type: String,
 		default: ''
+	},
+	price: {
+		type: Number,
+		max: 1000,
+		min: 1,
+		default: 1
+	},
+	priceInfo: {
+		type: String,
+		default: '',
+		maxlength: 100, 
+	},
+	currency: {
+		type: String,
+		default: 'SEK',
 	}
 })
 
@@ -60,22 +82,25 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema)
 
-const generateProductSlug = async (givenName) => {
-	let slug = givenName.toLowerCase().split(" ").map(item => item.slice(0,2)).join("-")
+const generateProductSlug = async (givenName, _id) => {
+	if (_id === undefined) _id = null
+	let slug = givenName.replace(/[^a-zA-Z \-]/g, "").split(" ").join("-").toLowerCase()
 	while(true) {
-		if (! await Product.findOne({ slug })) return slug
+		if (! await Product.findOne({ slug, _id: { $ne: _id} })) return slug
 		slug = slug + (Math.floor(Math.random() * 10) + 1) 
 	}
 }
 
 const productSetValidate = (product) => {
 	const schema = Joi.object({
+		_id: Joi.objectId().allow(''),
 		name: Joi.string().required().max(200),
-		slug: Joi.string().required().max(20),	
 		description: Joi.string().required().allow('').max(500),	
-		features: Joi.array().items(Joi.string().required().max(200).allow('')),
+		slug: Joi.string().required().max(20),	
+		price: Joi.number().required().min(1).max(1000),
+		images: Joi.array().items(Joi.string().max(500).allow(''))
+		// features: Joi.array().items(Joi.string().required().max(200).allow('')),
 		// images: Joi.array().items(Joi.string().required().max(200).allow('')),
-		_id: Joi.objectId().allow('')
 	})
 	return schema.validate(product)
 }
