@@ -30,7 +30,7 @@ const deleteImage = async (req, res) => {
 	try {
 		await removeFromS3(filename)
 	} catch (err) {
-		return winston.log(err, 'error')
+		return winston.log(`error`, 'Error:', err)
 	}
 	//update database
 	if (usage=== "profile") {

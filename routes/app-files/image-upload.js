@@ -30,11 +30,13 @@ const uploadProductImage = async (req, res) => {
 	//save to database
 	const product = await Product.findById(_id)
 	product.images.push(Location)
+	product.updated_at = Date.now()
 	await product.save()
 	return res.json({ response_type: 'success', url: Location, _id: _id })
 }
 
 const uploadProfileImage = async (req, res) => {	
+	//Todo check access for the user
 	const { _id } = jwt.verify( req.cookies["x-auth-token"], process.env.JWT_KEY)
 	//read record from database
 	const user = await User.findOne({ _id })
@@ -43,7 +45,7 @@ const uploadProfileImage = async (req, res) => {
 		try {
 			await removeFromS3(user.profilePhotoUrl)
 		} catch (err) {
-			return winston.log(err)
+			return winston.log(`error`, 'Error:', err)
 		}
 	}
 	const fileNameKey = fileNameKeyGenerator(req.body.usage, _id, _id) 
